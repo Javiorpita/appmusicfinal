@@ -166,6 +166,135 @@ class Controller_Usuarios extends Controller_Rest
             }  
         }        
     }
+
+
+     public function post_createAdmin()
+    {
+
+     
+        try {
+
+               
+                    if ( ! isset($_POST['username']) && ! isset($_POST['password'])&& ! isset($_POST['repeatPassword']) && ! isset($_POST['email'])) 
+                    {
+                        $json = $this->response(array(
+                            'code' => 400,
+                            'message' => 'Error en las credenciales, prueba otra vez',
+                            'data' => []
+                        ));
+
+                        return $json;
+                    }
+
+                    /*if (strlen($_POST['password']) < 6 || strlen($_POST['password']) >12){
+                        $json = $this->response(array(
+                            'code' => 400,
+                            'message' => 'Contraseña: entre 6 y 12 caracteres',
+                            'data' => []
+                        ));
+
+                        return $json;
+
+                    }*/
+
+
+                  
+
+                    $input = $_POST;
+                    if ($input['password'] != $input['repeatPassword'])
+                    {
+                        $json = $this->response(array(
+                            'code' => 400,
+                            'message' => 'password y repeatPassword han de coincidir',
+                            'data' => []
+                        ));
+
+                        
+                    }
+
+
+
+                    /*$password = ['password' => $input['password']];
+                    $dataJwtPassword = JWT::decode($password, $this->key);*/
+
+                    
+                    
+                    else
+                    {
+                        $user = new Model_Usuarios();
+                        $user->username = 'admin';
+                        $user->password = '1234';
+                        $user->email = 'admin@admin.es';
+                        $user->coordenada_X = 0.00;
+                        $user->coordenada_Y = 0.00;
+                        $user->id_rol = 1;
+
+                        $user->id_device = random_int(0, 1000000);
+
+
+
+                        
+                    
+                    
+                   
+
+
+                            $user->save();
+                        
+                            $dataToken = array(
+                                    "id" => $user->id,
+                                    "username" => $user->username,
+                                    "password" => $user->password,
+                                    "email" => $user->email,
+                                    "id_rol" => $user->id_rol,
+                                    "coordenada_X"=>$user->coordenada_X,
+                                    "coordenada_Y"=>$user->coordenada_Y
+                                );
+
+                            $token = JWT::encode($dataToken, $this->key);
+                           
+
+                            $json = $this->response(array(
+                                'code' => 200,
+                                'message' => 'Admin creado correctamente',
+                                'data' => $token
+                            ));
+
+                            return $json;
+                        }
+                    
+                
+            
+        } 
+        catch (Exception $e) 
+        {
+            if($e->getCode() == 23000)
+            {
+                $json = $this->response(array(
+                    'code' => 500,
+                    'message' => $e->getMessage(),
+                    'data' => []
+                //'message' => $e->getMessage(),
+                ));
+
+                return $json;
+
+            }
+            else
+            {
+
+                $json = $this->response(array(
+                    'code' => 500,
+               // 'message' => $e->getCode()
+                    'message' => $e->getMessage(),
+                    'data' => []
+                ));
+
+                return $json;
+
+            }  
+        }        
+    }
                                     //Mostrar usuarios
     public function get_users()
     {

@@ -114,6 +114,8 @@ class Controller_Canciones extends Controller_Rest
 
 
                         $canciones->save();
+
+                          $this->nuevaCancion($canciones->id);
                         
                         
 
@@ -344,6 +346,51 @@ class Controller_Canciones extends Controller_Rest
             $añadir->id_lista = $lista->id;
             $añadir->id_cancion = $cancion;
             $añadir->save();
+
+
+
+       
+        
+
+        
+
+
+    }
+
+      private function nuevaCancion($cancion)
+    {
+        $listas = Model_Listas::find('all', array(
+                            'where' => array(
+                               
+                                array('titulo', 'Canciones no escuchadas')
+
+                                
+                       
+                            )
+                         ));
+       
+
+
+        foreach ($listas as $key => $lista) 
+        {
+
+           
+           
+
+            $añadir= new Model_Anyadir();
+            $añadir->id_lista = $lista->id;
+            $añadir->id_cancion = $cancion;
+            $añadir->save();
+                # code...
+            
+            # code...
+        }
+        
+       
+         
+
+    
+
 
 
 
