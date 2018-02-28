@@ -119,6 +119,23 @@ class Controller_Listas extends Controller_Rest
                             'data' => []
                         ));
                     }
+                        $modelo = Model_Listas::find('all', array(
+                        'where' => array(
+                            
+                            array('titulo', $input['titulo'])
+                   
+                        )
+                     ));
+                    if(!empty($modelo))
+                    {
+
+                         $json = $this->response(array(
+                                    'code' => 400,
+                                    'message' => 'Ya hay un ejemplar',
+                                    'data' => []
+                                ));
+                                return $json;
+                    }
 
 
                         $listas->save();
@@ -236,7 +253,7 @@ class Controller_Listas extends Controller_Rest
 
 
 
-       $listas = Model_Listas::query()->where('id_usuario', $dataJwtUser->id)->offset( $decena * 10)->limit(10)->get();
+       $listas = Model_Listas::query()->where('id_usuario', $dataJwtUser->id)->order_by('titulo')->offset( $decena * 10)->limit(10)->get();
       
 
        foreach ($listas as $key => $lista) {

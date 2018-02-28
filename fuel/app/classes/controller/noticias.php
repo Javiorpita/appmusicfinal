@@ -110,6 +110,23 @@ class Controller_Noticias extends Controller_Rest
                     }
                     else
                     {
+                         $modelo = Model_Noticias::find('all', array(
+                            'where' => array(
+                                
+                                array('titulo', $input['titulo'])
+                       
+                            )
+                                     ));
+                        if(!empty($modelo))
+                        {
+
+                             $json = $this->response(array(
+                                        'code' => 400,
+                                        'message' => 'Ya hay un ejemplar',
+                                        'data' => []
+                                    ));
+                                    return $json;
+                        }
 
 
                         $noticias->save();

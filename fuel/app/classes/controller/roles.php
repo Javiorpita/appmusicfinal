@@ -58,6 +58,23 @@ class Controller_Roles extends Controller_Rest
                 }
                 else
                 {
+                     $modelo = Model_Roles::find('all', array(
+                            'where' => array(
+                                
+                                array('tipo', $input['tipo'])
+                       
+                            )
+                                     ));
+                        if(!empty($modelo))
+                        {
+
+                             $json = $this->response(array(
+                                        'code' => 400,
+                                        'message' => 'Ya hay un ejemplar',
+                                        'data' => []
+                                    ));
+                                    return $json;
+                        }
 
 
                     $roles->save();

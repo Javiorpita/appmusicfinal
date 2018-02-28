@@ -286,8 +286,8 @@ class Controller_Anyadir extends Controller_Rest
         if (empty($añadir))
         {
             $json = $this->response(array(
-                'code' => 500,
-                'message' => 'lista no encontada',
+                'code' => 400,
+                'message' => 'lista vacia',
                 'data' => []
             ));
             return $json;

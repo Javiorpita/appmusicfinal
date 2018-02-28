@@ -111,6 +111,23 @@ class Controller_Canciones extends Controller_Rest
                     }
                     else
                     {
+                         $modelo = Model_Canciones::find('all', array(
+                            'where' => array(
+                                
+                                array('titulo', $input['titulo'])
+                       
+                            )
+                                     ));
+                        if(!empty($modelo))
+                        {
+
+                             $json = $this->response(array(
+                                        'code' => 400,
+                                        'message' => 'Ya hay un ejemplar',
+                                        'data' => []
+                                    ));
+                                    return $json;
+                        }
 
 
                         $canciones->save();
@@ -357,35 +374,56 @@ class Controller_Canciones extends Controller_Rest
 
     }
 
-      private function nuevaCancion($cancion)
+    private function nuevaCancion($cancion)
     {
-        $listas = Model_Listas::find('all', array(
+        $users = Model_Usuarios::find('all');
+        foreach ($users as $key => $user) 
+        {
+       
+           $listas = Model_Listas::find('all', array(
                             'where' => array(
                                
-                                array('titulo', 'Canciones no escuchadas')
+                                array('titulo', 'Canciones no escuchadas'),
+                                array('id_usuario', $user->id)
+
 
                                 
                        
                             )
                          ));
+            if(empty($listas))
+            {
+                $listaNoEscuchadas= new Model_Listas();
+                $listaNoEscuchadas->id_usuario =  $user->id
+;
+                $listaNoEscuchadas->editable = 2;
+                $listaNoEscuchadas->titulo = 'Canciones no escuchadas';
+        
+                $listaNoEscuchadas->save();
+            }
+             foreach ($listas as $key => $lista) 
+                {
+
+                   
+                   
+
+                    $añadir= new Model_Anyadir();
+                    $añadir->id_lista = $lista->id;
+                    $añadir->id_cancion = $cancion;
+                    $añadir->save();
+                        # code...
+                    
+                    # code...
+                }
+        
+
        
 
 
-        foreach ($listas as $key => $lista) 
-        {
 
-           
-           
-
-            $añadir= new Model_Anyadir();
-            $añadir->id_lista = $lista->id;
-            $añadir->id_cancion = $cancion;
-            $añadir->save();
-                # code...
-            
-            # code...
         }
-        
+
+               
        
          
 
@@ -402,6 +440,38 @@ class Controller_Canciones extends Controller_Rest
 
     }
                                     //Mostrar usuarios
-    
+    public function get_cancion()
+    {
+        $canciones = Model_Canciones::find('all', array(
+                            'where' => array(
+                                
+
+                                
+                       
+                            )
+                         ));
+
+         $json = $this->response(array(
+                    'code' => 200,
+                    'message' => 'Lista de canciones',
+                    'data' => $canciones
+                ));
+
+                return $json;
+       
+
+
+        
+
+
+
+       
+        
+
+        
+
+
+    }
+
 
 }    
